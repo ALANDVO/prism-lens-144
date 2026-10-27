@@ -1,0 +1,89 @@
+
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor.com/schemas/plugin.schema.json",
+  "title": "Cursor Plugin Manifest",
+  "type": "object",
+  "required": ["name", "version", "displayName", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+      "description": "Plugin identifier. Lowercase letters, numbers, hyphens, and dots only. Must match directory name."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.-]+)?$",
+      "description": "Semantic version string"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Human-readable display name for the plugin"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "Plugin description shown in marketplace"
+    },
+    "author": {
+      "type": "string",
+      "maxLength": 100,
+      "description": "Plugin author name"
+    },
+    "repository": {
+      "type": "string",
+      "format": "uri",
+      "description": "Plugin source repository URL"
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier"
+    },
+    "skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths to skill directories"
+    },
+    "agents": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths to agent directories"
+    },
+    "mcpServers": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths to MCP server configuration files"
+    },
+    "hooks": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths to hooks configuration files"
+    },
+    "commands": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths to command definitions"
+    },
+    "logo": {
+      "type": "string",
+      "description": "Relative path to plugin logo image"
+    },
+    "variables": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": { "type": "string" },
+          "required": { "type": "boolean", "default": false },
+          "secret": { "type": "boolean", "default": true }
+        },
+        "required": ["description"]
+      },
+      "description": "Configuration variables for the plugin"
+    }
+  },
+  "additionalProperties": false
+}

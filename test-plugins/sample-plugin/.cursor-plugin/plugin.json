@@ -1,0 +1,17 @@
+
+{
+  "name": "sample-plugin",
+  "version": "1.0.0",
+  "displayName": "Sample Plugin",
+  "description": "A sample plugin for testing",
+  "author": "Test Author",
+  "repository": "https://github.com/test/sample-plugin",
+  "license": "MIT",
+  "skills": ["skills/sample-skill"],
+  "agents": ["agents/sample-agent"],
+  "mcpServers": [],
+  "hooks": [],
+  "commands": [],
+  "logo": "logo.png",
+  "variables": {}
+}

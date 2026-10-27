@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor.com/schemas/skill.schema.json",
+  "title": "Cursor Skill Frontmatter",
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$",
+      "description": "Skill identifier. Lowercase letters, numbers, and hyphens only. Must match parent folder name."
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Human-readable display name for the skill (shown in UI)"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "description": "Skill description (max 1024 characters)"
+    },
+    "paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "File patterns this skill applies to"
+    },
+    "disableModelInvocation": {
+      "type": "boolean",
+      "description": "Whether to disable model invocation for this skill"
+    },
+    "icon": {
+      "type": "string",
+      "maxLength": 10,
+      "description": "Emoji or icon character for the skill"
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^(#[0-9a-fA-F]{6}|[a-z]+)$",
+      "description": "Color for the skill (hex or named color)"
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Client-specific metadata extensions"
+    }
+  },
+  "additionalProperties": false
+}
