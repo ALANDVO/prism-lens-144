@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "current_feature": "diff-renderer-fix",
+  "features": [
+    {
+      "id": "plugin-manifest-core",
+      "title": "Plugin Manifest Core (plugin.json schema + validation)",
+      "status": "done",
+      "acceptance": [
+        "JSON schema for plugin.json validates required fields (name, version, displayName, description, skills, agents, mcpServers, hooks, commands, logo)",
+        "Validator script checks plugin.json against schema",
+        "Name pattern enforced: ^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$"
+      ],
+      "implementation": [
+        "schemas/plugin.schema.json",
+        "scripts/validate-plugin.mjs"
+      ],
+      "tests": [
+        "tests/validate-plugin.test.mjs"
+      ]
+    },
+    {
+      "id": "skill-frontmatter",
+      "title": "Skill Frontmatter Parsing & Validation",
+      "status": "done",
+      "acceptance": [
+        "SKILL.md frontmatter parsed (YAML)",
+        "Required fields: name (lowercase/hyphen), description",
+        "Name must match parent folder name",
+        "Optional: paths, disable-model-invocation, icon, color, metadata, displayName"
+      ],
+      "implementation": [
+        "schemas/skill.schema.json",
+        "scripts/validate-skill.mjs"
+      ],
+      "tests": [
+        "tests/validate-skill.test.mjs"
+      ]
+    },
+    {
+      "id": "local-plugin-symlink",
+      "title": "Local Plugin Symlink Support",
+      "status": "done",
+      "acceptance": [
+        "Plugins in ~/.cursor/plugins/local/ load via symlinks",
+        "Realpath resolution for plugin discovery",
+        "Broken symlinks handled gracefully with error reporting",
+        "Symlink status tracked in plugin metadata"
+      ],
+      "implementation": [
+        "scripts/load-plugins.mjs",
+        "scripts/validate-plugin.mjs (updated to work with discovered plugins)"
+      ],
+      "tests": [
+        "tests/load-plugins.test.mjs"
+      ]
+    },
+    {
+      "id": "diff-renderer-fix",
+      "title": "PR Review Canvas Diff Renderer Fix",
+      "status": "done",
+      "acceptance": [
+        "Line numbers computed from raw diff hunk headers before filtering",
+        "Import filtering opt-in with visible collapsed rows",
+        "Whitespace-only collapsing limited to trim-only comparison"
+      ],
+      "implementation": [
+        "cursor-team-kit/skills/pr-review-canvas/renderer.js"
+      ],
+      "tests": [
+        "tests/renderer.test.mjs"
+      ]
+    },
+    {
+      "id": "oauth-auth-flow",
+      "title": "OAuth Authentication Flow for Connectors",
+      "status": "planned",
+      "acceptance": [
+        "GitHub plugin provides sign-in link on Authenticate button",
+        "Gmail plugin includes gmail.settings.basic scope",
+        "Todoist/X plugins authenticate correctly"
+      ],
+      "implementation": [
+        "connectors/github/oauth.js",
+        "connectors/gmail/oauth.js",
+        "connectors/todoist/oauth.js"
+      ],
+      "tests": [
+        "tests/oauth.test.mjs"
+      ]
+    },
+    {
+      "id": "ci-validation-extended",
+      "title": "Extended CI Validation",
+      "status": "planned",
+      "acceptance": [
+        "CI triggers on all plugin files (SKILL.md, hooks.json, mcp.json, agents)",
+        "Root package.json with pinned dependencies",
+        "Validator checks path existence, frontmatter parse, mcp.json placeholders",
+        "Script test suites run in CI (bun test, tsc)"
+      ],
+      "implementation": [
+        ".github/workflows/validate-plugins.yml",
+        "package.json",
+        "package-lock.json",
+        "scripts/validate-plugins.mjs"
+      ],
+      "tests": [
+        "tests/ci-validation.test.mjs"
+      ]
+    }
+  ]
+}

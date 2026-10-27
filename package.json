@@ -1,0 +1,28 @@
+{
+  "name": "prism-lens-144-alan-vo",
+  "version": "1.0.0",
+  "description": "Cursor plugin specification and official plugins",
+  "main": "index.js",
+  "type": "module",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/validate-plugin.test.mjs",
+    "validate": "node scripts/validate-plugin.mjs"
+  },
+  "keywords": [
+    "cursor",
+    "plugin",
+    "specification",
+    "ai",
+    "ml"
+  ],
+  "author": "Alan Vo <alanvo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "js-yaml": "^5.5.0"
+  }
+}
