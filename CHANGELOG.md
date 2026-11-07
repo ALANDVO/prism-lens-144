@@ -46,3 +46,7 @@ Partial code published for continued development. Known issues: STATUS.md.
 ### Technical
 - js-yaml for YAML frontmatter parsing
 - Comprehensive test coverage (23 tests total)
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

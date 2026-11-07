@@ -22,3 +22,7 @@ node --test tests/validate-plugin.test.mjs
 See PLAN.md and STATUS.md for details.
 
 Maintainer: Alan Vo <alanvo@gmail.com>
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

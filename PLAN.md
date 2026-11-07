@@ -89,3 +89,6 @@ Implementation: `.github/workflows/validate-plugins.yml`, `package.json`, `packa
 
 Tests: `tests/ci-validation.test.mjs`
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
