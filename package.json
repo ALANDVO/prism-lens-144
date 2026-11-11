@@ -1,5 +1,5 @@
 {
-  "name": "prism-lens-144-alan-vo",
+  "name": "prism-lens-144",
   "version": "1.0.0",
   "description": "Cursor plugin specification and official plugins",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node --test tests/validate-plugin.test.mjs",
+    "test": "node --test",
     "validate": "node scripts/validate-plugin.mjs"
   },
   "keywords": [
