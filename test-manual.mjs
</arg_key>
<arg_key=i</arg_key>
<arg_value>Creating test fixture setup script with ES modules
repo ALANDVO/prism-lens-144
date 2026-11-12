@@ -1,0 +1,27 @@
+
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.resolve(__dirname);
+const TEST_PLUGIN_DIR = path.join(ROOT, 'test-fixtures', 'valid-plugin');
+
+fs.mkdirSync(path.join(TEST_PLUGIN_DIR, '.cursor-plugin'), { recursive: true });
+fs.mkdirSync(path.join(TEST_PLUGIN_DIR, 'skills', 'test-skill'), { recursive: true });
+fs.mkdirSync(path.join(TEST_PLUGIN_DIR, 'agents', 'test-agent'), { recursive: true });
+fs.mkdirSync(path.join(TEST_PLUGIN_DIR, 'commands', 'test-command'), { recursive: true });
+fs.mkdirSync(path.join(TEST_PLUGIN_DIR, 'rules', 'test-rule'), { recursive: true });
+
+const validPluginJson = { name: 'test-plugin', version: '1.0.0', description: 'A test plugin for validation', author: 'Test Author', skills: ['skills/test-skill'], agents: ['agents/test-agent/agent.md'], commands: ['commands/test-command'], rules: ['rules/test-rule/rule.md'], icon: 'icon.png' };
+const validMarketplaceJson = { name: 'test-plugin', publisher: 'test-publisher', version: '1.0.0', description: 'A test plugin for validation', repository: 'https://github.com/test/test-plugin' };
+
+fs.writeFileSync(path.join(TEST_PLUGIN_DIR, '.cursor-plugin', 'plugin.json'), JSON.stringify(validPluginJson, null, 2));
+fs.writeFileSync(path.join(TEST_PLUGIN_DIR, '.cursor-plugin', 'marketplace.json'), JSON.stringify(validMarketplaceJson, null, 2));
+fs.writeFileSync(path.join(TEST_PLUGIN_DIR, 'skills', 'test-skill', 'SKILL.md'), '---\nname: test-skill\ndescription: Test skill\n---\n# Test Skill');
+fs.writeFileSync(path.join(TEST_PLUGIN_DIR, 'agents', 'test-agent', 'agent.md'), '---\nname: test-agent\ndescription: Test agent\n---\n# Test Agent');
+fs.writeFileSync(path.join(TEST_PLUGIN_DIR, 'commands', 'test-command', 'command.json'), '{}');
+fs.writeFileSync(path.join(TEST_PLUGIN_DIR, 'rules', 'test-rule', 'rule.md'), '---\nname: test-rule\ndescription: Test rule\n---\n# Test Rule');
+fs.writeFileSync(path.join(TEST_PLUGIN_DIR, 'icon.png'), 'fake-icon');
+console.log('All files created');

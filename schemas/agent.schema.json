@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor.com/schemas/agent.schema.json",
+  "title": "Cursor Agent Frontmatter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$",
+      "description": "Agent identifier. Lowercase letters, numbers, and hyphens only. Must match the parent folder name."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1024,
+      "description": "Agent description (max 1024 characters)."
+    },
+    "paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Relative paths this agent applies to."
+    },
+    "disable-model-invocation": {
+      "type": "boolean",
+      "description": "Whether to disable model invocation for this agent."
+    },
+    "icon": {
+      "type": "string",
+      "description": "Icon identifier for the agent."
+    },
+    "color": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{6}$",
+      "description": "Hex color code for the agent (e.g., #ff6b6b)."
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Client-specific extra metadata (e.g., cursor-display-name).",
+      "patternProperties": {
+        ".*": {
+          "type": [
+            "string",
+            "number",
+            "boolean"
+          ]
+        }
+      }
+    }
+  }
+}
