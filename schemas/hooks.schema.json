@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor.com/schemas/hooks.schema.json",
+  "title": "Cursor Plugin Hooks Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["hooks"],
+  "properties": {
+    "hooks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event", "script"],
+        "properties": {
+          "event": {
+            "type": "string",
+            "enum": ["pre-commit", "post-commit", "pre-push", "post-merge", "pre-rebase", "post-checkout", "pre-receive", "update", "post-receive", "push-to-checkout", "pre-auto-gc", "post-rewrite", "sendemail-validate", "fsmonitor-watchman"],
+            "description": "Git hook event name."
+          },
+          "script": {
+            "type": "string",
+            "description": "Relative path to the script file to execute (e.g., './hooks/pre-commit.sh')."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 512,
+            "description": "Optional description of what this hook does."
+          }
+        }
+      },
+      "description": "Array of hook configurations."
+    }
+  }
+}

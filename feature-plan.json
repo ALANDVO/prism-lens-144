@@ -1,112 +1,251 @@
 {
   "schema_version": 1,
-  "current_feature": "diff-renderer-fix",
+  "current_feature": "individual-validator-enhancements",
   "features": [
     {
-      "id": "plugin-manifest-core",
-      "title": "Plugin Manifest Core (plugin.json schema + validation)",
+      "id": "plugin-validator-core",
+      "title": "Plugin manifest validator with JSON schema",
       "status": "done",
       "acceptance": [
-        "JSON schema for plugin.json validates required fields (name, version, displayName, description, skills, agents, mcpServers, hooks, commands, logo)",
-        "Validator script checks plugin.json against schema",
-        "Name pattern enforced: ^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$"
+        "Validates plugin.json against schema",
+        "Validates marketplace.json against schema",
+        "Reports path existence for component fields (skills, agents, hooks, mcpServers, logo/icon, commands, rules)",
+        "CLI tool exits non-zero on validation failure"
       ],
       "implementation": [
         "schemas/plugin.schema.json",
-        "scripts/validate-plugin.mjs"
+        "schemas/marketplace.schema.json",
+        "scripts/validate-plugins.mjs",
+        "package.json"
       ],
       "tests": [
-        "tests/validate-plugin.test.mjs"
+        "tests/validate-plugins.test.mjs"
       ]
     },
     {
-      "id": "skill-frontmatter",
-      "title": "Skill Frontmatter Parsing & Validation",
+      "id": "skill-validator",
+      "title": "SKILL.md frontmatter validator",
       "status": "done",
       "acceptance": [
-        "SKILL.md frontmatter parsed (YAML)",
-        "Required fields: name (lowercase/hyphen), description",
-        "Name must match parent folder name",
-        "Optional: paths, disable-model-invocation, icon, color, metadata, displayName"
+        "Parses YAML frontmatter from SKILL.md files",
+        "Validates required fields: name, description",
+        "Validates name format (lowercase, hyphens only, matches folder name)",
+        "Validates description length (<= 1024 chars)",
+        "Reports parse errors with file context",
+        "CLI tool exits non-zero on validation failure"
       ],
       "implementation": [
         "schemas/skill.schema.json",
-        "scripts/validate-skill.mjs"
+        "scripts/validate-skills.mjs"
       ],
       "tests": [
-        "tests/validate-skill.test.mjs"
+        "tests/validate-skills.test.mjs"
       ]
     },
     {
-      "id": "local-plugin-symlink",
-      "title": "Local Plugin Symlink Support",
+      "id": "ci-workflow",
+      "title": "CI workflow for plugin validation",
       "status": "done",
       "acceptance": [
-        "Plugins in ~/.cursor/plugins/local/ load via symlinks",
-        "Realpath resolution for plugin discovery",
-        "Broken symlinks handled gracefully with error reporting",
-        "Symlink status tracked in plugin metadata"
-      ],
-      "implementation": [
-        "scripts/load-plugins.mjs",
-        "scripts/validate-plugin.mjs (updated to work with discovered plugins)"
-      ],
-      "tests": [
-        "tests/load-plugins.test.mjs"
-      ]
-    },
-    {
-      "id": "diff-renderer-fix",
-      "title": "PR Review Canvas Diff Renderer Fix",
-      "status": "done",
-      "acceptance": [
-        "Line numbers computed from raw diff hunk headers before filtering",
-        "Import filtering opt-in with visible collapsed rows",
-        "Whitespace-only collapsing limited to trim-only comparison"
-      ],
-      "implementation": [
-        "cursor-team-kit/skills/pr-review-canvas/renderer.js"
-      ],
-      "tests": [
-        "tests/renderer.test.mjs"
-      ]
-    },
-    {
-      "id": "oauth-auth-flow",
-      "title": "OAuth Authentication Flow for Connectors",
-      "status": "planned",
-      "acceptance": [
-        "GitHub plugin provides sign-in link on Authenticate button",
-        "Gmail plugin includes gmail.settings.basic scope",
-        "Todoist/X plugins authenticate correctly"
-      ],
-      "implementation": [
-        "connectors/github/oauth.js",
-        "connectors/gmail/oauth.js",
-        "connectors/todoist/oauth.js"
-      ],
-      "tests": [
-        "tests/oauth.test.mjs"
-      ]
-    },
-    {
-      "id": "ci-validation-extended",
-      "title": "Extended CI Validation",
-      "status": "planned",
-      "acceptance": [
-        "CI triggers on all plugin files (SKILL.md, hooks.json, mcp.json, agents)",
-        "Root package.json with pinned dependencies",
-        "Validator checks path existence, frontmatter parse, mcp.json placeholders",
-        "Script test suites run in CI (bun test, tsc)"
+        "Triggers on all plugin-related file changes (.cursor-plugin/**, **/plugin.json, **/marketplace.json, **/SKILL.md, **/hooks.json, **/mcp.json, **/agents/**/*.md, schemas/**, scripts/**, package.json, package-lock.json)",
+        "Uses `npm ci` for reproducible dependency installation",
+        "Runs plugin manifest validator (`npm run validate`)",
+        "Runs skill validator (`npm run validate:skills`)",
+        "Runs agent validator (`npm run validate:agents`)",
+        "Runs hooks validator (`npm run validate:hooks`)",
+        "Runs MCP validator (`npm run validate:mcp`)",
+        "Runs unit tests (`npm test`)",
+        "Conditionally runs additional test suites (bun test, tsc) for packages that have them"
       ],
       "implementation": [
         ".github/workflows/validate-plugins.yml",
-        "package.json",
-        "package-lock.json",
-        "scripts/validate-plugins.mjs"
+        "package-lock.json"
+      ],
+      "tests": []
+    },
+    {
+      "id": "agent-validator",
+      "title": "Agent frontmatter validator",
+      "status": "done",
+      "acceptance": [
+        "Parses YAML frontmatter from agents/*.md files",
+        "Validates required fields: name, description",
+        "Validates name format (lowercase, hyphens only, matches folder name)",
+        "Validates description length (<= 1024 chars)",
+        "Validates optional fields: paths, disable-model-invocation, icon, color, metadata",
+        "Reports parse errors with file context",
+        "CLI tool exits non-zero on validation failure"
+      ],
+      "implementation": [
+        "schemas/agent.schema.json",
+        "scripts/validate-agents.mjs"
       ],
       "tests": [
-        "tests/ci-validation.test.mjs"
+        "tests/validate-agents.test.mjs"
+      ]
+    },
+    {
+      "id": "mcp-validator",
+      "title": "MCP configuration validator",
+      "status": "done",
+      "acceptance": [
+        "Validates mcp.json structure against schema (mcpServers, command, args, env, cwd)",
+        "Validates ${VAR} placeholders in mcp.json are declared in plugin.json variables",
+        "Finds mcp.json files in nested directories",
+        "Reports parse errors with file context",
+        "CLI tool exits non-zero on validation failure"
+      ],
+      "implementation": [
+        "schemas/mcp.schema.json",
+        "scripts/validate-mcp.mjs"
+      ],
+      "tests": [
+        "tests/validate-mcp.test.mjs"
+      ]
+    },
+    {
+      "id": "hooks-validator",
+      "title": "Hooks configuration validator",
+      "status": "done",
+      "acceptance": [
+        "Validates hooks.json against schema",
+        "Checks script paths exist",
+        "Validates required fields: event, script",
+        "Validates event name against known Git hook events",
+        "Validates optional description field (max 512 chars)",
+        "Reports parse errors with file context",
+        "CLI tool exits non-zero on validation failure"
+      ],
+      "implementation": [
+        "schemas/hooks.schema.json",
+        "scripts/validate-hooks.mjs"
+      ],
+      "tests": [
+        "tests/validate-hooks.test.mjs"
+      ]
+    },
+    {
+      "id": "rules-validator",
+      "title": "Rules frontmatter validator",
+      "status": "done",
+      "acceptance": [
+        "Validates rules frontmatter (name, description)",
+        "Validates name format (lowercase, hyphens only, matches folder name)",
+        "Validates description length (<= 1024 chars)",
+        "Reports parse errors with file context",
+        "Integrated into strict mode validation"
+      ],
+      "implementation": [
+        "schemas/rule.schema.json",
+        "scripts/validate-plugins.mjs (validateRuleFile, validateReferencedFiles)"
+      ],
+      "tests": [
+        "tests/validate-plugins.test.mjs (5 strict mode tests for rules validation)"
+      ]
+    },
+    {
+      "id": "command-validator",
+      "title": "Command configuration validator",
+      "status": "done",
+      "acceptance": [
+        "Validates command.json against schema (name, displayName, description, icon, arguments)",
+        "Validates required fields: name, description",
+        "Validates name format (lowercase, hyphens only, matches folder name)",
+        "Validates description length (<= 1024 chars)",
+        "Validates optional fields: displayName, icon, arguments (object schema)",
+        "Reports parse errors with file context",
+        "Integrated into strict mode validation",
+        "Non-strict mode preserves path-only checking (backward compatible)"
+      ],
+      "implementation": [
+        "schemas/command.schema.json",
+        "scripts/validate-plugins.mjs (validateCommandFile, validateReferencedFiles)"
+      ],
+      "tests": [
+        "tests/validate-plugins.test.mjs (8 strict mode tests for command validation)"
+      ]
+    },
+    {
+      "id": "strict-mode",
+      "title": "Strict mode for integrated plugin validation",
+      "status": "done",
+      "acceptance": [
+        "Added --strict flag to validate-plugins.mjs",
+        "Validates SKILL.md frontmatter content when strict mode enabled",
+        "Validates agent frontmatter content when strict mode enabled",
+        "Validates hooks.json content and script paths when strict mode enabled",
+        "Validates mcp.json content and variable placeholders when strict mode enabled",
+        "Validates rules frontmatter content when strict mode enabled",
+        "Validates command.json content when strict mode enabled",
+        "Non-strict mode preserves original behavior (path existence only)",
+        "Backward compatible with existing workflows"
+      ],
+      "implementation": [
+        "scripts/validate-plugins.mjs (STRICT_MODE flag, validateReferencedFiles function)"
+      ],
+      "tests": [
+        "tests/validate-plugins.test.mjs (13 strict mode tests total: 5 rules + 8 commands, plus existing non-strict tests)"
+      ]
+    },
+    {
+      "id": "json-output-mode",
+      "title": "JSON output mode for CI/CD integration",
+      "status": "done",
+      "acceptance": [
+        "Added --json flag to validate-plugins.mjs",
+        "Outputs structured JSON with plugin paths, validation status, and detailed errors per component",
+        "Compatible with --strict mode (--strict --json)",
+        "Updated README with usage documentation",
+        "Backward compatible - default behavior unchanged"
+      ],
+      "implementation": [
+        "scripts/validate-plugins.mjs (JSON_MODE flag, structured output in main function)"
+      ],
+      "tests": [
+        "tests/validate-plugins.test.mjs (existing tests cover CLI behavior)"
+      ]
+    },
+    {
+      "id": "symlink-support",
+      "title": "Symlink support for plugin discovery",
+      "status": "done",
+      "acceptance": [
+        "findPluginDirs follows symlinks to directories",
+        "Symlinked plugin directories are discovered and validated",
+        "Broken symlinks are ignored gracefully",
+        "Unit test validates symlink plugin discovery"
+      ],
+      "implementation": [
+        "scripts/validate-plugins.mjs (findPluginDirs function updated to handle symlinks)"
+      ],
+      "tests": [
+        "tests/validate-plugins.test.mjs (symlink discovery test)"
+      ]
+    },
+    {
+      "id": "individual-validator-enhancements",
+      "title": "Strict mode and JSON output for individual validators",
+      "status": "done",
+      "acceptance": [
+        "Added --strict flag to validate-skills.mjs, validate-agents.mjs, validate-hooks.mjs, validate-mcp.mjs",
+        "Added --json flag to validate-skills.mjs, validate-agents.mjs, validate-hooks.mjs, validate-mcp.mjs",
+        "Strict mode validates content against JSON schemas",
+        "JSON output provides structured results for CI/CD integration",
+        "Compatible with combining --strict --json flags",
+        "Updated README with usage documentation for individual validators",
+        "All existing tests pass"
+      ],
+      "implementation": [
+        "scripts/validate-skills.mjs",
+        "scripts/validate-agents.mjs",
+        "scripts/validate-hooks.mjs",
+        "scripts/validate-mcp.mjs"
+      ],
+      "tests": [
+        "tests/validate-skills.test.mjs",
+        "tests/validate-agents.test.mjs",
+        "tests/validate-hooks.test.mjs",
+        "tests/validate-mcp.test.mjs"
       ]
     }
   ]

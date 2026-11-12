@@ -1,0 +1,97 @@
+name: Validate Plugins
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.cursor-plugin/**'
+      - '**/plugin.json'
+      - '**/marketplace.json'
+      - '**/SKILL.md'
+      - '**/hooks.json'
+      - '**/mcp.json'
+      - '**/agents/**/*.md'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.cursor-plugin/**'
+      - '**/plugin.json'
+      - '**/marketplace.json'
+      - '**/SKILL.md'
+      - '**/hooks.json'
+      - '**/mcp.json'
+      - '**/agents/**/*.md'
+      - 'schemas/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  validate:
+    name: Validate Plugin Manifests, Skills, Agents, and MCP
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate plugin manifests
+        run: npm run validate
+
+      - name: Validate skills
+        run: npm run validate:skills
+
+      - name: Validate agents
+        run: npm run validate:agents
+      - name: Validate hooks
+        run: npm run validate:hooks
+      - name: Validate MCP configurations
+        run: npm run validate:mcp
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Check for additional test suites
+        run: |
+          # Run bun test and tsc for packages that have them
+          if [ -f "orchestrate/skills/orchestrate/scripts/package.json" ]; then
+            cd orchestrate/skills/orchestrate/scripts
+            npm ci
+            npm test
+            npx tsc --noEmit
+          fi
+          if [ -f "pstack/skills/poteto-mode/scripts/package.json" ]; then
+            cd pstack/skills/poteto-mode/scripts
+            npm ci
+            npm test
+            npx tsc --noEmit
+          fi

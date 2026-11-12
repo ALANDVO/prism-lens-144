@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor.com/schemas/marketplace.schema.json",
+  "title": "Cursor Plugin Marketplace Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "publisher", "version", "description", "repository"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
+      "description": "Plugin identifier. Lowercase letters, numbers, hyphens, and dots only."
+    },
+    "publisher": {
+      "type": "string",
+      "description": "Publisher identifier."
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Human-readable display name for the plugin."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.-]+)?$",
+      "description": "Semantic version string."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1024,
+      "description": "Plugin description (max 1024 characters)."
+    },
+    "repository": {
+      "type": "string",
+      "format": "uri",
+      "description": "Plugin source repository URL."
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier."
+    },
+    "icon": {
+      "type": "string",
+      "description": "Relative path to plugin icon (PNG/SVG, 128x128 recommended)."
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Plugin categories for marketplace browsing."
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Plugin tags for searchability."
+    }
+  }
+}
+

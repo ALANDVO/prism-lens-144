@@ -1,89 +1,97 @@
-
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://cursor.com/schemas/plugin.schema.json",
   "title": "Cursor Plugin Manifest",
   "type": "object",
-  "required": ["name", "version", "displayName", "description"],
+  "additionalProperties": false,
+  "required": ["name", "version", "description", "author"],
   "properties": {
     "name": {
       "type": "string",
       "pattern": "^[a-z0-9]([a-z0-9.-]*[a-z0-9])?$",
-      "description": "Plugin identifier. Lowercase letters, numbers, hyphens, and dots only. Must match directory name."
+      "description": "Plugin identifier. Lowercase letters, numbers, hyphens, and dots only."
+    },
+    "displayName": {
+      "type": "string",
+      "description": "Human-readable display name for the plugin."
     },
     "version": {
       "type": "string",
       "pattern": "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.-]+)?$",
-      "description": "Semantic version string"
-    },
-    "displayName": {
-      "type": "string",
-      "minLength": 1,
-      "maxLength": 100,
-      "description": "Human-readable display name for the plugin"
+      "description": "Semantic version string."
     },
     "description": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 500,
-      "description": "Plugin description shown in marketplace"
+      "maxLength": 1024,
+      "description": "Plugin description (max 1024 characters)."
     },
     "author": {
       "type": "string",
-      "maxLength": 100,
-      "description": "Plugin author name"
+      "description": "Plugin author name or organization."
+    },
+    "license": {
+      "type": "string",
+      "description": "SPDX license identifier."
     },
     "repository": {
       "type": "string",
       "format": "uri",
-      "description": "Plugin source repository URL"
+      "description": "Plugin source repository URL."
     },
-    "license": {
+    "homepage": {
       "type": "string",
-      "description": "SPDX license identifier"
+      "format": "uri",
+      "description": "Plugin homepage URL."
+    },
+    "icon": {
+      "type": "string",
+      "description": "Relative path to plugin icon (PNG/SVG, 128x128 recommended)."
     },
     "skills": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Relative paths to skill directories"
+      "items": {
+        "type": "string"
+      },
+      "description": "Relative paths to skill directories (each must contain SKILL.md)."
     },
     "agents": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Relative paths to agent directories"
-    },
-    "mcpServers": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Relative paths to MCP server configuration files"
-    },
-    "hooks": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Relative paths to hooks configuration files"
+      "items": {
+        "type": "string"
+      },
+      "description": "Relative paths to agent markdown files."
     },
     "commands": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Relative paths to command definitions"
+      "items": {
+        "type": "string"
+      },
+      "description": "Relative paths to command directories."
     },
-    "logo": {
+    "hooks": {
       "type": "string",
-      "description": "Relative path to plugin logo image"
+      "description": "Relative path to hooks.json file."
+    },
+    "mcpServers": {
+      "type": "string",
+      "description": "Relative path to mcp.json file."
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Relative paths to rule files."
     },
     "variables": {
       "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "description": { "type": "string" },
-          "required": { "type": "boolean", "default": false },
-          "secret": { "type": "boolean", "default": true }
-        },
-        "required": ["description"]
+      "patternProperties": {
+        ".*": {
+          "type": "string",
+          "description": "Variable description for user configuration."
+        }
       },
-      "description": "Configuration variables for the plugin"
+      "description": "Configuration variables for the plugin (referenced as ${VAR} in mcp.json)."
     }
-  },
-  "additionalProperties": false
+  }
 }

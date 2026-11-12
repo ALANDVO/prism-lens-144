@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cursor.com/schemas/mcp.schema.json",
+  "title": "Cursor MCP Server Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mcpServers"],
+  "properties": {
+    "mcpServers": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "required": ["command", "args"],
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "type": "string",
+              "description": "Command to execute the MCP server."
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Arguments passed to the command."
+            },
+            "env": {
+              "type": "object",
+              "patternProperties": {
+                ".*": {
+                  "type": "string"
+                }
+              },
+              "description": "Environment variables for the MCP server. Can reference plugin variables as ${VAR}."
+            },
+            "cwd": {
+              "type": "string",
+              "description": "Working directory for the command."
+            }
+          }
+        }
+      }
+    }
+  }
+}
