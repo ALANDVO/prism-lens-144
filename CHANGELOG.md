@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.2.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
@@ -100,6 +104,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - MCP Validator: 9 tests
   - Hooks Validator: 7 tests
 - Project dependencies pinned in `package-lock.json`
+- Quiet mode for Plugin Validator (`scripts/validate-plugins.mjs`)
+  - Added `--quiet` flag to suppress the "All validations passed" message
+  - Suitable for CI/CD pipelines where only the exit code matters
+  - Backward compatible - default behavior unchanged
 
 ---
 
