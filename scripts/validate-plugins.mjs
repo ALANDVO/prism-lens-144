@@ -460,6 +460,7 @@ function main() {
   const STRICT_MODE = process.argv.includes('--strict');
   const JSON_MODE = process.argv.includes('--json');
   const SUMMARY_MODE = process.argv.includes('--summary');
+const QUIET_MODE = process.argv.includes('--quiet');
   
   const pluginDirs = findPluginDirs(TARGET_DIR);
   
@@ -580,7 +581,7 @@ function main() {
     console.log(JSON.stringify({ valid: !hasErrors, plugins: results, errors: allErrors }, null, 2));
   } else if (hasErrors && !SUMMARY_MODE) {
     console.error('\n✗ Validation failed with errors above');
-  } else if (!hasErrors && !SUMMARY_MODE) {
+  } else if (!hasErrors && !SUMMARY_MODE && !QUIET_MODE) {
     console.log('\n✓ All validations passed');
   }
   

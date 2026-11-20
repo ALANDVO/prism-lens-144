@@ -440,7 +440,17 @@ describe('Plugin Validator', () => {
     fs.rmSync(nonStrictDir, { recursive: true, force: true });
   });
 
-  it('should discover plugin through symlink to directory', () => {
+  
+
+  it('should not output passing message with --quiet flag', () => {
+    const result = runValidatorWithFlags(TEST_PLUGIN_DIR, ['--quiet']);
+    assert.equal(result.code, 0, `Expected exit code 0, got ${result.code}. stderr: ${result.stderr}`);
+    // The --quiet flag should suppress the "All validations passed" message
+    assert.ok(!result.stdout.includes('✓ All validations passed'),
+      `Expected no "All validations passed" message with --quiet, but got: ${result.stdout}`);
+  });
+
+it('should discover plugin through symlink to directory', () => {
     const symlinkDir = path.join(ROOT, 'test-fixtures', 'symlink-plugin');
     const realPluginDir = path.join(ROOT, 'test-fixtures', 'real-plugin-for-symlink');
     
