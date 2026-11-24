@@ -103,6 +103,14 @@ function validateAgentFile(filePath) {
     errors.push({ file: relPath, message: `Description exceeds 1024 characters (${frontmatter.description.length} chars)` });
   }
 
+  // Check metadata value types
+  if (frontmatter.metadata) {
+    const metadataErrors = checkMetadataValues(frontmatter.metadata);
+    if (metadataErrors.length > 0) {
+      errors.push(...metadataErrors);
+    }
+  }
+
   // Schema validation (strict mode only)
   if (STRICT_MODE && frontmatter.name && frontmatter.description) {
     const valid = validateAgent(frontmatter);
@@ -190,3 +198,18 @@ function main() {
 }
 
 process.exit(main());
+
+/**
+ * Check metadata value types for agent frontmatter.
+ * Returns array of error messages for invalid value types.
+ */
+function checkMetadataValues(metadata) {
+  const errors = [];
+  for (const [key, value] of Object.entries(metadata)) {
+    const valueType = typeof value;
+    if (valueType !== 'string' && valueType !== 'number' && valueType !== 'boolean') {
+      errors.push(`Metadata field '${key}' has invalid value type: '${valueType}'. Must be string, number, or boolean.`);
+    }
+  }
+  return errors;
+}

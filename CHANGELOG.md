@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.3.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
@@ -16,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Metadata value type validation for agent frontmatter (`scripts/validate-agents.mjs`)
+  - Validates that metadata values are only string, number, or boolean types
+  - Provides clear error messages for invalid value types
 - JSON output mode for Plugin Validator (`scripts/validate-plugins.mjs`)
   - Added `--json` flag for structured JSON output
   - Compatible with `--strict` mode (`--strict --json`)
