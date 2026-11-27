@@ -37,6 +37,13 @@ function setupTestFixtures() {
     '#!/bin/bash\necho "Running pre-commit checks..."'
   );
 
+  // Dependency directory that must be ignored during discovery
+  fs.mkdirSync(path.join(TEST_HOOKS_DIR, 'valid-hooks', 'node_modules', 'dep'), { recursive: true });
+  fs.writeFileSync(
+    path.join(TEST_HOOKS_DIR, 'valid-hooks', 'node_modules', 'dep', 'hooks.json'),
+    '{ this is not valid json ]'
+  );
+
   // Invalid hooks.json (missing required field)
   fs.mkdirSync(path.join(TEST_HOOKS_DIR, 'invalid-hooks'), { recursive: true });
   fs.writeFileSync(
@@ -245,6 +252,13 @@ describe('Hooks Validator', () => {
     assert.ok(Array.isArray(output.hooks));
     assert.ok(output.hooks.length > 0);
     assert.ok(output.hooks[0].valid === true);
+  });
+
+  it('should ignore hooks.json files inside node_modules', () => {
+    const result = runValidator(path.join(TEST_HOOKS_DIR, 'valid-hooks'));
+    assert.equal(result.code, 0);
+    assert.match(result.stdout, /All hooks.json files are valid/);
+    assert.doesNotMatch(result.stderr, /node_modules/);
   });
 
   it('should output JSON errors in --json mode', () => {
