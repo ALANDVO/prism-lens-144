@@ -36,6 +36,7 @@ function findMcpFiles(root) {
       for (const entry of entries) {
         const fullPath = path.join(dir, entry.name);
         if (entry.isDirectory()) {
+          if (entry.name === 'node_modules' || entry.name === '.git') continue;
           walk(fullPath);
         } else if (entry.isFile() && entry.name === 'mcp.json') {
           files.push(fullPath);
